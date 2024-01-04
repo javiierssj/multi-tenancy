@@ -18,7 +18,7 @@ const tenantSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
-  },
+  }
 });
 
 tenantSchema.index({ subdomain: 1 });

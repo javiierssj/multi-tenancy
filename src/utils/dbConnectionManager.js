@@ -1,35 +1,20 @@
-const express = require('express');
-const userRoutes = require('../routes/userRoutes');
-const taskRoutes = require('../routes/taskRoutes');
-const { connectDB } = require('../utils/db');
-const tenantMiddleware = require('../middleware/tenantMiddleware');
-const logger = require('../utils/logger');
+const mongoose = require("mongoose");
+const config = require("../config");
 
-const app = express();
+class DBConnectionManager {
+  constructor() {
+    this.connections = {};
+  }
 
-// Conexión a la base de datos
-connectDB();
+  async getConnectionForTenant(tenantId) {
+    if (!this.connections[tenantId]) {
+      const tenantDbUri = `${config.db.mongoDB.type}://${config.db.mongoDB.user}:${config.db.mongoDB.passowrd}@${config.db.mongoDB.host}/${tenantId}?retryWrites=true&w=majority`;
+      const tenantConnection = await mongoose.createConnection(tenantDbUri);
+      this.connections[tenantId] = tenantConnection;
+    }
 
-// Middleware para análisis de JSON entrante
-app.use(express.json());
+    return this.connections[tenantId];
+  }
+}
 
-// Middleware para manejar multi-tenancy
-app.use(tenantMiddleware);
-
-// Rutas
-app.use('/api/users', userRoutes);
-app.use('/api/tasks', taskRoutes);
-
-// Middleware para manejar errores no capturados
-app.use((err, req, res, next) => {
-  logger.error(err);
-  res.status(500).send({ error: 'An unexpected error occurred' });
-});
-
-// Iniciar el servidor
-const PORT = process.env.PORT;
-app.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`);
-});
-
-module.exports = app;
+module.exports = new DBConnectionManager();

@@ -10,7 +10,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // Otros campos como nombre, etc.
+  tenant_id: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tenant',
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('User', userSchema);
