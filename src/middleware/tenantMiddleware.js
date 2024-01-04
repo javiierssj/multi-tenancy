@@ -1,26 +1,25 @@
-const Tenant = require('../models/Tenant'); // Modelo para acceder a la lista de tenants
+// src/middleware/tenantMiddleware.js
+
+const Tenant = require('../models/Tenant');
 const dbConnectionManager = require('../utils/dbConnectionManager');
 
 const tenantMiddleware = async (req, res, next) => {
   try {
-    const isDevelopment = process.env.NODE_ENV === 'development';
+    const tenantId = req.headers['x-tenant-id'];
 
-    let subdomain;
-    if (isDevelopment) {
-      subdomain = req.headers['x-tenant-subdomain'] || 'localhost'; // 'defaultTenant' es un ejemplo
-    } else {
-      subdomain = req.hostname.split('.')[0];
+    if (!tenantId) {
+      return res.status(400).send({ error: 'Tenant ID not provided' });
     }
 
-    const tenant = await Tenant.findOne({ subdomain });
+    const tenant = await Tenant.findById(tenantId);
     if (!tenant) {
       return res.status(403).send({ error: 'Tenant not allowed' });
     }
 
-    const dbConnection = await dbConnectionManager.getConnectionForTenant(subdomain);
+    const dbConnection = await dbConnectionManager.getConnectionForTenant(tenantId);
     req.dbConnection = dbConnection;
-    req.tenantSubdomain = subdomain;
-    
+    req.tenantId = tenantId;
+
     next();
   } catch (error) {
     return res.status(500).send({ error: 'Error verifying tenant' });
