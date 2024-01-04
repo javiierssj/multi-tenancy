@@ -11,8 +11,13 @@ const userController = {
    */
   async register(req, res) {
     try {
+      const tenantId = req.headers['x-tenant-id'];
       const hashedPassword = await bcrypt.hash(req.body.password, 8);
-      const user = new User({ ...req.body, password: hashedPassword });
+      const user = new User({
+        email: req.body.email,
+        password: hashedPassword,
+        tenant_id: tenantId 
+      });
       await user.save();
       const token = jwt.sign({ _id: user._id.toString() }, config.jwtSecret);
       res.status(201).send({ user, token });
