@@ -3,8 +3,10 @@ const Task = require("../models/Task");
 const taskController = {
   async createTask(req, res) {
     try {
+      const tenantId = req.headers['x-tenant-id'];
       const task = new Task({
         ...req.body,
+        tenant_id: tenantId,
         owner: req.user._id,
       });
       await task.save();
@@ -40,9 +42,14 @@ const taskController = {
 
   async updateTask(req, res) {
     try {
+      const {title, description, completed} = req.body;
       const task = await Task.findOneAndUpdate(
         { _id: req.params.taskId, owner: req.user._id },
-        req.body,
+        {
+          title: title,
+          description: description,
+          completed: completed,
+        },
         { new: true, runValidators: true }
       );
       if (!task) {

@@ -15,6 +15,11 @@ const taskSchema = new mongoose.Schema({
     required: true,
     ref: 'User',
   },
+  tenant_id: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tenant',
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('Task', taskSchema);
