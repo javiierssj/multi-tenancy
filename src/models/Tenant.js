@@ -1,5 +1,3 @@
-// src/models/TenantModel.js
-
 const mongoose = require('mongoose');
 
 const tenantSchema = new mongoose.Schema({
