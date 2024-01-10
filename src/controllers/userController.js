@@ -28,6 +28,7 @@ const userController = {
       const tenantId = req.headers['x-tenant-id'];
       const hashedPassword = await bcrypt.hash(req.body.password, 8);
       const user = new User({
+        name: req.body.name,
         email: req.body.email,
         password: hashedPassword,
         tenant_id: tenantId 
