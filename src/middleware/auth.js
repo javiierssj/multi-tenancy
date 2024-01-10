@@ -5,7 +5,7 @@ const config = require('../config');
 const auth = async (req, res, next) => {
   try {
     const token = req.header('Authorization');
-    if (!token) {
+      if (!token) {
       throw new Error('Token not provided');
     }
 

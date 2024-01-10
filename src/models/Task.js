@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const taskSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -10,6 +8,22 @@ const taskSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  state: {
+    type: String,
+    enum: ['Pendiente', 'En progreso', 'Terminado'],
+    default: 'Pendiente',
+    required: true,
+  },
+  activities: [{
+    name: {
+      type: String,
+      required: true,
+    },
+    finished: {
+      type: Boolean,
+      default: false,
+    },
+  }],
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -22,4 +36,5 @@ const taskSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Task', taskSchema);
+const Task = mongoose.model('Task', taskSchema);
+module.exports = Task;

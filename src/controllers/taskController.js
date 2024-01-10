@@ -42,13 +42,15 @@ const taskController = {
 
   async updateTask(req, res) {
     try {
-      const {title, description, completed} = req.body;
+      const {title, description, completed, state, activities} = req.body;
       const task = await Task.findOneAndUpdate(
         { _id: req.params.taskId, owner: req.user._id },
         {
           title: title,
           description: description,
           completed: completed,
+          state: state,
+          activities: activities,
         },
         { new: true, runValidators: true }
       );
