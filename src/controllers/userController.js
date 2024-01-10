@@ -5,6 +5,20 @@ const config = require("../config");
 
 const userController = {
   /**
+   * Obtiene todos los usuarios
+   * @param {Object} req - Objeto de solicitud de Express
+   * @param {Object} res - Objeto de respuesta de Express
+   */
+  async listUser(req, res) {
+    try {
+      const users = await User.find();
+      res.send(users);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  },
+
+  /**
    * Registra un nuevo usuario
    * @param {Object} req - Objeto de solicitud de Express
    * @param {Object} res - Objeto de respuesta de Express
