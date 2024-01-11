@@ -50,11 +50,11 @@ const userController = {
     try {
       const user = await User.findOne({ email: req.body.email });
       if (!user) {
-        return res.status(400).send({ error: "Unable to login" });
+        return res.status(400).send({ error: "Unable to login, account don't exist" });
       }
       const isMatch = await bcrypt.compare(req.body.password, user.password);
       if (!isMatch) {
-        return res.status(400).send({ error: "Unable to login" });
+        return res.status(400).send({ error: "Unable to login, don't match email with password" });
       }
       const token = jwt.sign({ _id: user._id.toString() }, config.jwtSecret);
       res.send({ user, token });
