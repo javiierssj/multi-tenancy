@@ -35,7 +35,7 @@ const userController = {
       });
       await user.save();
       const token = jwt.sign({ _id: user._id.toString() }, config.jwtSecret);
-      res.status(201).send({ user, token });
+      res.status(201).json({ user: user, token: token });
     } catch (error) {
       res.status(400).send(error);
     }
@@ -57,7 +57,7 @@ const userController = {
         return res.status(400).send({ error: "Unable to login, don't match email with password" });
       }
       const token = jwt.sign({ _id: user._id.toString() }, config.jwtSecret);
-      res.send({ user, token });
+      res.status(200).json({ user: user, token: token });
     } catch (error) {
       res.status(500).send(error);
     }
